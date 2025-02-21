@@ -33,7 +33,7 @@ export class triangle_thing {
 
   render(renderer: webgl_renderer, delta_time: number) {
     const gl = renderer.context
-    this.rotation_angle += 0.1 * delta_time
+    this.rotation_angle += 0.9 * delta_time
 
     this.rotation_matrix = new Float32Array([
       Math.cos(this.rotation_angle),

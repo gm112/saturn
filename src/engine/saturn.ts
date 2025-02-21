@@ -30,8 +30,6 @@ let triangle_thing_entity = new triangle_thing(renderer)
 function process_frame(current_time: number, previous_time: number) {
   if (!ready) return
   const delta_time = (current_time - previous_time) / 1000
-  requestAnimationFrame((timestamp) => process_frame(timestamp, current_time))
-
   for (const [_, worker] of workers.entries()) {
     const message: worker_message = {
       action: 'request_current_state',
@@ -48,6 +46,7 @@ function process_frame(current_time: number, previous_time: number) {
   for (const entities of DEBUG_ONLY_worker_entity_states.values()) entities_to_log.push(...entities)
 
   debug_log_stuff(entities_to_log, entities_element!)
+  requestAnimationFrame((timestamp) => process_frame(timestamp, current_time))
 }
 
 function on_engine_ready() {
@@ -91,7 +90,7 @@ async function init_worker(index: number = 0) {
     worker.onmessage = (event: MessageEvent) => process_worker_message(worker, event)
     worker.onerror = (error: ErrorEvent) => console.error('Error in worker:', error.message)
 
-    const make_moveable = index === 0 || index === 4
+    const make_moveable = index === 0 || index === 2
     const message: worker_message = {
       action: 'initialize',
       entity_name: 'movable',
@@ -143,3 +142,10 @@ export function handle_hmr() {
     })
   }
 }
+
+/*
+
+Notes:
+
+This approach has a couple flaws. First, workers should request their own frame. And there should be a more architected protocol for orchestrating jobs across workers. This also doesn't make use of transfer objects, which would be faster than cow operations.
+*/

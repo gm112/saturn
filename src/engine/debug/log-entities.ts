@@ -9,5 +9,5 @@ export function debug_log_stuff(entities: entity_state[], status_element: HTMLEl
   }
 
   const entity_json = entities_to_log.join('\n')
-  requestAnimationFrame(() => (status_element.innerText = entity_json))
+  status_element.innerText = entity_json
 }
