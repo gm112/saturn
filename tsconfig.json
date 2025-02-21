@@ -1,0 +1,32 @@
+{
+  "compilerOptions": {
+    "module": "ESNext", // Use ES module syntax
+    "target": "ESNext", // Target the latest ECMAScript version
+    "moduleResolution": "node", // Resolve modules in Node.js style
+    "strict": true,
+    "allowJs": true,
+    "checkJs": true,
+    "incremental": true,
+    "esModuleInterop": true,
+    "declaration": true,
+    "declarationMap": true,
+    // "inlineSourceMap": true,
+    "isolatedModules": true,
+    "useDefineForClassFields": true,
+    "composite": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "preserveSymlinks": true,
+    "allowArbitraryExtensions": true,
+    "allowUnusedLabels": true,
+    "noImplicitAny": true,
+    "skipLibCheck": true,
+    "useUnknownInCatchVariables": true,
+    "noPropertyAccessFromIndexSignature": true,
+    "noUncheckedIndexedAccess": true,
+    "verbatimModuleSyntax": true,
+    "outDir": "./dist" // Output directory for compiled JS files
+  },
+  "include": ["src/**/*.ts"], // Include all TypeScript files
+  "exclude": ["node_modules"] // Exclude node_modules
+}
