@@ -13,11 +13,17 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - uses: pnpm/action-setup@v4
+        name: Install pnpm
+        with:
+          run_install: false
+
       # Set up Node.js (using the latest LTS version)
       - name: Set up Node.js (LTS)
         uses: actions/setup-node@v4
         with:
-          node-version: 'lts'  # Use the latest LTS version of Node.js
+          node-version: 'lts/*'  # Use the latest LTS version of Node.js
+          cache: 'pnpm'
 
       # Install pnpm globally
       - name: Install pnpm
@@ -29,12 +35,10 @@ jobs:
 
       # Build the Vite project
       - name: Build project
-        run: pnpm run build
+        run: pnpm build
 
       # Deploy to GitHub Pages
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
         with:
-          branch: gh-pages  # The branch to deploy to
           folder: dist      # The folder containing the production build (usually `dist` for Vite)
-          token: ${{ secrets.GITHUB_TOKEN }}  # Automatically provided token to authenticate the action
