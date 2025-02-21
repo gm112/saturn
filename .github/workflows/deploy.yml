@@ -1,0 +1,40 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main  # Trigger the workflow on push to the main branch
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      # Check out the repository code
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Set up Node.js (using the latest LTS version)
+      - name: Set up Node.js (LTS)
+        uses: actions/setup-node@v4
+        with:
+          node-version: 'lts'  # Use the latest LTS version of Node.js
+
+      # Install pnpm globally
+      - name: Install pnpm
+        run: npm install -g pnpm
+
+      # Install dependencies using pnpm
+      - name: Install dependencies
+        run: pnpm install
+
+      # Build the Vite project
+      - name: Build project
+        run: pnpm run build
+
+      # Deploy to GitHub Pages
+      - name: Deploy to GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          branch: gh-pages  # The branch to deploy to
+          folder: dist      # The folder containing the production build (usually `dist` for Vite)
+          token: ${{ secrets.GITHUB_TOKEN }}  # Automatically provided token to authenticate the action

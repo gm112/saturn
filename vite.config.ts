@@ -3,7 +3,7 @@ import { defineConfig } from 'vite'
 export default defineConfig({
   // Define the root directory for Vite to serve the project
   root: './', // This makes sure the server serves from the current directory
-
+  base: '/saturn/',
   build: {
     // Output the compiled files to the dist directory
     outDir: 'dist',
