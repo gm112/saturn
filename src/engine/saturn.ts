@@ -15,8 +15,6 @@ import Worker from './worker.js?worker'
 const worker_count = navigator.hardwareConcurrency ?? 4
 const workers: Map<number, Worker> = new Map()
 let worker_ready_count = 0
-
-let renderer = new webgl_renderer()
 let ready = false
 
 // DEBUG STUFF
@@ -24,7 +22,10 @@ let logged_count = 0
 const DEBUG_ONLY_worker_entity_states: Map<number, entity_state[]> = new Map()
 const status_element = document.getElementById('status')
 const entities_element = document.getElementById('entities')
-let triangle_thing_entity = new triangle_thing(renderer)
+
+let triangle_thing_entity: triangle_thing | undefined
+let renderer: webgl_renderer | undefined
+let animation_frame_id: number | undefined
 // END DEBUG STUFF
 
 function process_frame(current_time: number, previous_time: number) {
@@ -38,7 +39,7 @@ function process_frame(current_time: number, previous_time: number) {
     worker.postMessage(message)
   }
 
-  if (!renderer.context) return //GPU isn't ready to render yet.
+  if (!renderer || !triangle_thing_entity || !renderer.context) return //GPU isn't ready to render yet.
   renderer.start_frame()
   triangle_thing_entity.render(renderer, delta_time)
 
@@ -46,7 +47,7 @@ function process_frame(current_time: number, previous_time: number) {
   for (const entities of DEBUG_ONLY_worker_entity_states.values()) entities_to_log.push(...entities)
 
   debug_log_stuff(entities_to_log, entities_element!)
-  requestAnimationFrame((timestamp) => process_frame(timestamp, current_time))
+  animation_frame_id = requestAnimationFrame((timestamp) => process_frame(timestamp, current_time))
 }
 
 function on_engine_ready() {
@@ -111,15 +112,18 @@ async function init_worker(index: number = 0) {
 }
 
 export function start_game_loop() {
+  // This sucks, but whatever its a demo.
   worker_ready_count = 0
   logged_count = 0
   ready = false
   DEBUG_ONLY_worker_entity_states.clear()
-  renderer = new webgl_renderer()
-  triangle_thing_entity = new triangle_thing(renderer)
+  renderer = undefined
+  triangle_thing_entity = undefined
 
   for (const [_, worker] of workers.entries()) worker.terminate()
   workers.clear()
+  renderer = new webgl_renderer()
+  triangle_thing_entity = new triangle_thing(renderer)
 
   for (let index = 0; index < worker_count; index++) init_worker(index)
 }
@@ -127,13 +131,16 @@ export function start_game_loop() {
 export function handle_hmr() {
   let handling = false
   if (import.meta.hot) {
-    import.meta.hot.accept(() => {
+    import.meta.hot.accept((new_module) => {
+      if (animation_frame_id) cancelAnimationFrame(animation_frame_id)
       if (handling) return
       try {
         handling = true
         console.clear()
-        console.log('Reloading...')
-        start_game_loop()
+        const module = new_module as unknown as typeof import('./saturn.js')
+        console.log('Reloading...', module)
+        if (!module?.start_game_loop) import.meta.hot?.invalidate()
+        else module.start_game_loop()
       } catch {
         if (location) location.reload()
       }
