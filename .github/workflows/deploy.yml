@@ -3,15 +3,27 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches:
-      - main  # Trigger the workflow on push to the main branch
+      - main # Trigger the workflow on push to the main branch
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
 
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
     steps:
       # Check out the repository code
       - name: Checkout repository
         uses: actions/checkout@v4
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
 
       - uses: pnpm/action-setup@v4
         name: Install pnpm
@@ -22,7 +34,7 @@ jobs:
       - name: Set up Node.js (LTS)
         uses: actions/setup-node@v4
         with:
-          node-version: 'lts/*'  # Use the latest LTS version of Node.js
+          node-version: 'lts/*' # Use the latest LTS version of Node.js
           cache: 'pnpm'
 
       # Install pnpm globally
@@ -37,8 +49,11 @@ jobs:
       - name: Build project
         run: pnpm build
 
-      # Deploy to GitHub Pages
-      - name: Deploy to GitHub Pages
-        uses: JamesIves/github-pages-deploy-action@v4
+      - name: Upload static files as artifact
+        uses: actions/upload-pages-artifact@v3 # or specific "vX.X.X" version tag for this action
         with:
-          folder: dist      # The folder containing the production build (usually `dist` for Vite)
+          path: dist/
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

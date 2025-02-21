@@ -3,14 +3,25 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Saturn Multi-Core Demo</title>
+    <title>Saturn Multi-Threading Demo</title>
   </head>
   <body>
-    <h1>Saturn Multi-Core Demo</h1>
+    <h1>Saturn Multi-Threading Demo</h1>
+    <p>
+      Find code at <br />
+      <a href="https://stackblitz.com/~/github.com/gm112/saturn">https://stackblitz.com/~/github.com/gm112/saturn</a>
+      <br />
+      <a href="https://github.com/gm112/saturn">https://github.com/gm112/saturn</a>
+    </p>
+
     <div id="status">Running...</div>
     <canvas id="game"> </canvas>
     <pre id="entities"></pre>
+    <div
+      id="console_output"
+      style="height: 400px; overflow: scroll; padding: 4px; backdrop-filter: invert(33%) sepia(17%)"
+    ></div>
 
-    <script type="module" src="/src/saturn.ts"></script>
+    <script type="module" src="/src/game.ts"></script>
   </body>
 </html>

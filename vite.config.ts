@@ -8,7 +8,10 @@ export default defineConfig({
     // Output the compiled files to the dist directory
     outDir: 'dist',
     target: 'esnext',
-    sourcemap: true // Optional: Enable sourcemaps for easier debugging
+    sourcemap: true
+  },
+  worker: {
+    format: 'es'
   },
 
   server: {

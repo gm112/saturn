@@ -1,4 +1,4 @@
-import type { entity_state, entity } from '../types/entity.js'
+import type { entity_state, entity } from '../engine/types/entity.js'
 
 export default function movable_entity(default_state?: Partial<entity_state>): entity {
   const initial_state: entity_state = {

@@ -1,4 +1,3 @@
-import movable_entity from './entities/movable.js'
 import type { entity, entity_state } from './types/entity.js'
 
 let current_entity_id = 0
@@ -7,10 +6,6 @@ export function new_id(worker_id: number = 1) {
 }
 
 export const create_entity = async (entity_name: string, entity_params?: Partial<entity_state>): Promise<entity> => {
-  switch (entity_name) {
-    case 'movable':
-      return movable_entity(entity_params)
-    default:
-      throw new Error(`Entity type ${entity_name} is not recognized`)
-  }
+  const { default: entity_factory } = await import(`../entities/${entity_name}.ts`)
+  return entity_factory(entity_params)
 }

@@ -1,6 +1,7 @@
 import type { worker_message } from './types/worker-message.js'
 import type { worker_response } from './types/worker-response.js'
 import type { entity_state, entity } from './types/entity.js'
+
 import { new_id } from './entity-manager.js'
 
 const worker_entities: entity[] = []
